@@ -10,10 +10,30 @@
   let HTMLFlor: HTMLElement
   let modal: boolean
 
+  function scrollYATasaDeProgreso() {
+    // Altura total del contenido del documento
+    var alturaDocumento = document.documentElement.scrollHeight
+    // Altura visible de la ventana
+    var alturaVentana = window.innerHeight
+    // Máximo valor de scrollY posible para que el fondo de la página esté justo en la parte inferior de la ventana
+    var maxScrollY = alturaDocumento - alturaVentana
+
+    // Obtener el valor actual de scrollY
+    var valorActualScrollY = window.scrollY
+
+    // Calcular la tasa de progreso como un número entre 0 y 1
+    var tasaDeProgreso = 1 - valorActualScrollY / maxScrollY
+
+    // Asegurar que la tasa de progreso esté siempre entre 0 y 1
+    tasaDeProgreso = Math.min(Math.max(tasaDeProgreso, 0), 1)
+
+    return tasaDeProgreso
+  }
+
   onMount(() => {
     document.addEventListener('scroll', () => {
       if (HTMLTitle) HTMLTitle.style.filter = `brightness(${1 - (window.scrollY - 300) / 500})`
-      if (HTMLTitle) HTMLTitle.style.filter = `brightness(${1 - (window.scrollY - 300) / 500})`
+      if (HTMLFlor) HTMLFlor.style.filter = `brightness(${scrollYATasaDeProgreso()})`
     })
   })
 </script>
@@ -29,11 +49,11 @@
       bottom: 0;
       overflow: hidden;
 
-      position: absolute;
+      position: fixed;
       width: 245px;
-      z-index: 4;
+      z-index: 1;
 
-      filter: brightness(0.9);
+      filter: brightness(1);
 
       img {
         height: 215px;
@@ -65,6 +85,7 @@
         width: 300px;
         display: flex;
         justify-content: space-between;
+        background-color: white;
 
         position: absolute;
         right: 0;
@@ -83,7 +104,7 @@
 </style>
 
 <div class="screen">
-  <div class="flor2">
+  <div class="flor2" bind:this={HTMLFlor}>
     <img src="flor.png" alt="" />
   </div>
 
